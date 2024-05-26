@@ -59,4 +59,17 @@ public class AnimeService {
         animes.add(anime);
         return anime;
     }
+
+    public void delete(Long id) {
+        animes.remove(findById(id));
+        /*
+            Irá buscar o anime pelo id e caso não encontrar irá lançar a bad request
+            definida no findById.
+            Caso contrário irá remover o anime corretamente.
+         */
+    }
 }//class
+
+/*
+
+ */
