@@ -1,0 +1,3 @@
+server:
+  error:
+    include-stacktrace: on_param #Esconde o stack tracer de errors apresentados no front-end

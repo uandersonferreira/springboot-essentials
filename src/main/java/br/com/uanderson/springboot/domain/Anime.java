@@ -1,23 +1,15 @@
 package br.com.uanderson.springboot.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+@Data
+@AllArgsConstructor
 public class Anime {
+    private Long id;
     private String name;
-
-    public Anime(String name) {
-        this.name = name;
-    }
-
-    public Anime() {
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }
+
 /*
 Erros de 'serializer', 'BeanSerializer' , 'Serialização':
 normalmente é por causa dos getters ou setters, pois o Jackson que mapeia os
