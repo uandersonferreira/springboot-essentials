@@ -5,16 +5,33 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 public class AnimeService {
+    //@Service representa uma Class que é reponsável pela implementação
+    // da REGRA DE NEGÓCIO da aplicação.
+
     //private final AnimeRepository animeRepository;
-    private List<Anime> animes = List.of(
-            new Anime(1L, "Naruto"),
-            new Anime(2L, "Boruto"),
-            new Anime(3L, "Boku no Hero Academy")
-    );
+    private static List<Anime> animes;
+    //Lista imutável, onde todas as instâncias da classe terão acesso
+    // à mesma lista, independentemente de quantos objetos sejam criados
+
+    static {
+        //Bloco static é iniciado primeiro, por isso se cria um intância de arrayList e atribui a animes
+        animes = new ArrayList<>(
+                //Criar uma instância de arrayList para que seja possível
+                // manipular a lista 'animes' que é imutável, senão gera um
+                // 'UnsupportedOperationException', pois não aceita modificações
+                List.of(
+                        new Anime(1L, "Naruto"),
+                        new Anime(2L, "Boruto"),
+                        new Anime(3L, "Boku no Hero Academy")
+                )
+        );
+    }
 
     public List<Anime> listAll() {
         return animes;
@@ -37,4 +54,9 @@ public class AnimeService {
          */
     }
 
+    public Anime save(Anime anime) {
+        anime.setId(ThreadLocalRandom.current().nextLong(animes.size(), 1_000_000));
+        animes.add(anime);
+        return anime;
+    }
 }//class
