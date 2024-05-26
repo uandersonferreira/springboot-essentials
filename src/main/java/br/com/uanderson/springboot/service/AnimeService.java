@@ -68,6 +68,27 @@ public class AnimeService {
             Caso contrário irá remover o anime corretamente.
          */
     }
+
+    public void replace(Anime anime) {
+        delete(anime.getId());
+        animes.add(anime);
+        /*
+        lembrar-do encadeamento das chamadas dos method.
+            1° - Pesquisar o anime pelo id, se não existir lança bad request
+            2° - Deletar caso exista
+            3° - Adicionar o novo anime
+
+        OBSERVATION:
+        Quando realizamos um PUT(update/replace) estamos substituindo o ESTADO
+        inteiro do objeto, de forma idempotente.
+
+        O ESTADO são os valores atribuídos aos atributos de um objeto.
+        Diferentemente do COMPORTAMENTO que são os métodos da classe,que como o próprio
+        nome diz, é o comportamento do objeto.
+
+         */
+
+    }
 }//class
 
 /*

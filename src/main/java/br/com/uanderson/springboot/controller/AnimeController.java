@@ -64,6 +64,21 @@ public class AnimeController {
         */
     }
 
+    @PutMapping
+    public ResponseEntity<Void> replace(@RequestBody Anime anime){
+        animeService.replace(anime);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        /*
+        Quando realizamos um PUT(update/replace) estamos substituindo o ESTADO
+        inteiro do objeto, de forma idempotente.
+
+        O ESTADO são os valores atribuídos aos atributos de um objeto.
+        Diferentemente do COMPORTAMENTO que são os métodos da classe,que como o próprio
+        nome diz, é o comportamento do objeto.
+
+         */
+    }
+
 }//class
 /*
 @RestController -> Retorna um corpo contento somente String/Json
