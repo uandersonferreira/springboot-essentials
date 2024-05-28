@@ -1,3 +1,19 @@
 server:
   error:
-    include-stacktrace: on_param #Esconde o stack tracer de errors apresentados no front-end
+    include-stacktrace: on_param # Esconde o stack trace de errors apresentados no front-end
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:${POSTGRES_DB_LOCAL_PORT}/${POSTGRES_DB_DATABASE}
+    username: ${POSTGRES_DB_USER}
+    password: ${POSTGRES_DB_ROOT_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        show_sql: true
+
