@@ -5,6 +5,7 @@ import br.com.uanderson.springboot.requests.AnimePostRequestBody;
 import br.com.uanderson.springboot.requests.AnimePutRequestBody;
 import br.com.uanderson.springboot.service.AnimeService;
 import br.com.uanderson.springboot.util.DateUtil;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -44,7 +45,7 @@ public class AnimeController {
     }
     @PostMapping
     //@ResponseStatus(HttpStatus.CREATED) //outra forma de retornar o status
-    public ResponseEntity<Anime> save(@RequestBody AnimePostRequestBody animePostRequestBody){
+    public ResponseEntity<Anime> save(@RequestBody @Valid AnimePostRequestBody animePostRequestBody){
         return new ResponseEntity<>(animeService.save(animePostRequestBody), HttpStatus.CREATED);
         /*
            @RequestBody Anime anime -> Aqui o Jackson entra em cena realizando o mapeamento
