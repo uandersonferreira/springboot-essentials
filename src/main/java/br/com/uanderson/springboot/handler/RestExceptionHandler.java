@@ -2,12 +2,17 @@ package br.com.uanderson.springboot.handler;
 
 import br.com.uanderson.springboot.exception.BadRequestException;
 import br.com.uanderson.springboot.exception.BadRequestExceptionDetails;
+import br.com.uanderson.springboot.exception.ValidationExceptionDetails;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @ControllerAdvice // Mais generico padrão MVC - retornar as views html ou JSON ou XML
 //@RestControllerAdvice// mais específico e adaptado para controladores RESTful retorna dados JSON ou XML
@@ -15,7 +20,7 @@ public class RestExceptionHandler {
     //   handler Global -  Manipulação/Tratamento global
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<BadRequestExceptionDetails> handlerBadRequestException(
-            BadRequestException badRequestException){
+            BadRequestException badRequestException) {
         return new ResponseEntity<>(
                 // Criação de uma resposta personalizada para exceções do tipo BadRequestException
                 BadRequestExceptionDetails.builder()
@@ -26,8 +31,43 @@ public class RestExceptionHandler {
                         .timestamp(LocalDateTime.now())
                         .build(), HttpStatus.BAD_REQUEST
         );
-    }
-}
+    }//method
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ValidationExceptionDetails> handlerMethodArgumentNotValidException(
+            MethodArgumentNotValidException exception) {
+
+        List<FieldError> fieldErrors = exception.getBindingResult().getFieldErrors();
+
+        String fields = fieldErrors.stream().map(FieldError::getField)
+                .collect(Collectors.joining(", "));
+
+        String fieldsMessage = fieldErrors.stream().map(FieldError::getDefaultMessage)
+                .collect(Collectors.joining(", "));
+
+        return new ResponseEntity<>(
+                // Criação de uma resposta personalizada para exceções do tipo MethodArgumentNotValidException
+                ValidationExceptionDetails.builder()
+                        .title("Bad Request Exception, Invalid fields")
+                        .status(HttpStatus.BAD_REQUEST.value())
+                        .details(exception.getMessage())//poderia ser uma mensagem mais curta tipo: "Check the field(s) errors"
+                        .developerMessage(exception.getClass().getName())
+                        .timestamp(LocalDateTime.now())
+                        .fields(fields)
+                        .fieldsMessage(fieldsMessage)
+                        .build(), HttpStatus.BAD_REQUEST
+        );
+        /*
+         - Para saber Qual é a class da exception correta gerada na url adicione: '?trace=true'
+            - http:localhost:8080/animes?trace=true
+         - Em resumo, o método getBindingResult() é usado para obter um objeto BindingResult que contém
+          informações sobre os erros de validação de um formulário em um aplicação Spring.
+
+         */
+    }//method
+
+
+}//class
 /*
 
 @ControllerAdvice:
