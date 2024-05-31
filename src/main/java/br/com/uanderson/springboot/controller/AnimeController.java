@@ -24,7 +24,7 @@ public class AnimeController {
     private final AnimeService animeService;
 
     @GetMapping()
-    public ResponseEntity<List<Anime>> list() {
+    public ResponseEntity<List<Anime>> listAll() {
         log.info(dateUtil.formatLocalDateTimeToDatabaseStyle(LocalDateTime.now()));
         return new ResponseEntity<>(animeService.listAll(), HttpStatus.OK);
         //Boas práticas: retornar conteúdo extras, tipo status da request,
@@ -42,7 +42,6 @@ public class AnimeController {
 
          */
     }
-
     @PostMapping
     //@ResponseStatus(HttpStatus.CREATED) //outra forma de retornar o status
     public ResponseEntity<Anime> save(@RequestBody AnimePostRequestBody animePostRequestBody){
@@ -80,6 +79,39 @@ public class AnimeController {
 
          */
     }
+
+    @GetMapping(path = "/find")
+    public ResponseEntity<List<Anime>> findByName(@RequestParam String name) {
+        return ResponseEntity.ok(animeService.findByName(name));
+    /*
+    Quando temos mais de um método HTTP utilizando/respondendo no mesmo endpoint, como a seguir:
+    - @GetMapping(path = "/{name}")
+    - @GetMapping(path = "/{id}")
+    Gera ambiguidade, pois o Spring não consegue diferenciar, já que estamos dizendo que
+    no mesmo endpoint são aceitos dois tipos de dados (@PathVariable).
+
+    Neste caso, o recomendável é criar um novo endpoint que aceite o segundo tipo de dado.
+
+    Uma das opções é utilizando o @RequestParam (parâmetros passados na URL), que
+    por padrão são obrigatórios. Exemplo:
+    - http://localhost:8080/animes/find?name=Naruto Shippuden
+    - @GetMapping(path = "/find/{name}") - Outra opção é usar @PathVariable, mas pode ser mais difícil de lembrar,
+    especialmente se precisar usar muitos parâmetros para construir a URL/endpoint.
+
+
+    DIFERENÇA ENTRE @RequestParam e @PathVariable
+    @RequestParam - Parâmetros passados na URL -> animes/find?name=naruto&idade=20&cargo=hokage
+        - A anotação @RequestParam é usada para mapear parâmetros de consulta (query parameters) em uma URL.
+        - É possível definir valores padrão para os parâmetros usando o atributo
+          defaultValue da anotação @RequestParam (@RequestParam(defaultValue = "") String name).
+        - Caso haja mais de um parâmetro, eles são diferenciados pelo '&'.
+        Exemplo: http://localhost:8080/animes/find?name=naruto&id=2
+
+    @PathVariable - Parâmetros/valores que fazem parte da URL -> animes/find/id (animes/find/{id})
+        - A anotação @PathVariable é usada para mapear partes variáveis de uma URL.
+    */
+    }
+
 
 }//class
 /*
