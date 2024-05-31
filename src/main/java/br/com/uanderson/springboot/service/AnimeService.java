@@ -6,10 +6,9 @@ import br.com.uanderson.springboot.mapper.AnimeMapper;
 import br.com.uanderson.springboot.repository.AnimeRepository;
 import br.com.uanderson.springboot.requests.AnimePostRequestBody;
 import br.com.uanderson.springboot.requests.AnimePutRequestBody;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -23,6 +22,7 @@ public class AnimeService {
     public List<Anime> listAll() {
         return animeRepository.findAll();
     }
+
     public List<Anime> findByName(String name) {
         return animeRepository.findByName(name);
     }
@@ -42,9 +42,92 @@ public class AnimeService {
          */
     }
 
+    @Transactional //Habilita o princípio da atomicidade(rollback(): que Cancela uma transação se ocorre erros)
     public Anime save(AnimePostRequestBody animePostRequestBody) {
         Anime anime = AnimeMapper.INSTANCE.toAnime(animePostRequestBody);
         return animeRepository.save(anime);
+        /*
+        Uma transação garante que todo o processo deve ser executado com êxito
+        seguindo o princípio da atomicidade, que é tudo ou nada.
+
+        @Transactional: Garante que, se ocorrer um erro durante a execução de uma
+        transação, a mesma será cancelada completamente, não persistindo no banco de dados.
+
+        Recomenda-se sempre usar a anotação @Transactional quando temos métodos que fazem alguma persistência
+        no banco de dados, a fim de garantir o princípio da atomicidade.
+
+        Principais métodos de controle de transações:
+        - begin(): Inicia uma transação;
+        - commit(): Finaliza uma transação;
+        - rollback(): Cancela uma transação.
+
+        OBSERVAÇÕES:
+        - Exceções não checadas (unchecked exceptions): As exceções não checadas, ou seja, as subclasses
+          de RuntimeException ou Error, geralmente fazem com que a transação seja marcada para
+          rollback (desfazer). Isso significa que todas as operações realizadas dentro da transação são
+          desfeitas e as alterações no banco de dados são revertidas.
+
+        - Exceções checadas (checked exceptions): As exceções checadas, ou seja, as subclasses de Exception,
+          normalmente não são consideradas pelo mecanismo de transação do Spring. Isso significa que, se uma
+          exceção checada for lançada dentro de um método anotado com @Transactional, a transação não será
+          marcada para rollback automaticamente. A exceção será propagada para o chamador do método e cabe a
+          ele decidir como lidar com a exceção.
+
+        No entanto, podemos configurar o comportamento de captura das exceções checadas usando a
+        anotação @Transactional com a propriedade 'rollbackFor' informando a instância da classe Exception:
+          - @Transactional(rollbackFor = Exception.class): Anotação para captar exceções checadas.
+
+Outras propriedades importantes de @Transactional:
+        - propagation: Define o comportamento da transação em relação a transações existentes.
+          Exemplos:
+          - REQUIRED: Usa a transação atual se existir, ou cria uma nova se não existir.
+          - REQUIRES_NEW: Sempre cria uma nova transação, suspendendo a existente se necessário.
+          - MANDATORY: Usa a transação atual se existir, ou lança uma exceção se não existir.
+
+        - isolation: Define o nível de isolamento da transação, controlando a visibilidade das alterações feitas por transações concorrentes.
+          Exemplos:
+          - READ_COMMITTED: Permite leitura de dados que foram comprometidos por outras transações.
+          - READ_UNCOMMITTED: Permite leitura de dados não comprometidos, o que pode resultar em leituras sujas.
+          - REPEATABLE_READ: Garante que, se uma linha for lida várias vezes na mesma transação, o valor lido será sempre o mesmo.
+          - SERIALIZABLE: O nível mais alto de isolamento, onde as transações são completamente isoladas umas das outras, mas pode impactar o desempenho.
+
+        - timeout: Define um tempo limite para a transação, após o qual ela será automaticamente revertida.
+
+        - readOnly: Indica se a transação deve ser apenas de leitura. Isso pode ajudar no desempenho quando não há operações de escrita envolvidas.
+
+        - noRollbackFor: Especifica quais exceções não devem causar o rollback da transação. Por exemplo, @Transactional(noRollbackFor = SpecificException.class) significa que a transação não será revertida se uma SpecificException for lançada.
+
+        - rollbackFor: Especifica quais exceções devem causar o rollback da transação, incluindo exceções verificadas. Por exemplo, @Transactional(rollbackFor = Exception.class) significa que a transação será revertida se uma exceção do tipo Exception for lançada.
+
+        - transactionManager: Define o gerenciador de transações específico a ser usado. Isso é útil em configurações com múltiplos gerenciadores de transações.
+
+        @Transactional(
+            propagation = Propagation.REQUIRED,
+            isolation = Isolation.READ_COMMITTED,
+            timeout = 30,
+            readOnly = false, Permitir operações de escrita
+            rollbackFor = Exception.class, //Fazer rollback em exceções verificadas
+            noRollbackFor = SpecificException.class //Não fazer rollback para SpecificException
+         )
+        public void performOperations() {
+            // Código que realiza operações de banco de dados
+        }
+
+    ex SQL:
+        BEGIN TRANSACTION ; --CONTEXTO TRANSAÇÕES
+        DELETE FROM anime;
+        --EXECUTA MAIS UM MONTE DE TAREFAS
+        --OCORREU UM ERRO NO PROCESSO
+
+        ROLLBACK ; --DESFAZ TODAS AS ALTERAÇÕES
+
+        COMMIT ; --NÃO OCORREU ERRO VALIDA DE FATO AS OPERAÇÕES
+
+        SELECT * FROM anime;
+
+    */
+
+
     }
 
     public void delete(Long id) {
