@@ -1,6 +1,8 @@
 package br.com.uanderson.springboot.controller;
 
 import br.com.uanderson.springboot.domain.Anime;
+import br.com.uanderson.springboot.requests.AnimePostRequestBody;
+import br.com.uanderson.springboot.requests.AnimePutRequestBody;
 import br.com.uanderson.springboot.service.AnimeService;
 import br.com.uanderson.springboot.util.DateUtil;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +33,7 @@ public class AnimeController {
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<Anime> findById(@PathVariable Long id) {
-        return ResponseEntity.ok(animeService.findById(id));
+        return ResponseEntity.ok(animeService.findByIdOrThrowBadRequestException(id));
         /*
           - @GetMapping(path = "/{id}")
            Quando temos mais de 1 method http (GET) é necessário diferenciá-los por um
@@ -43,8 +45,8 @@ public class AnimeController {
 
     @PostMapping
     //@ResponseStatus(HttpStatus.CREATED) //outra forma de retornar o status
-    public ResponseEntity<Anime> save(@RequestBody Anime anime){
-        return new ResponseEntity<>(animeService.save(anime), HttpStatus.CREATED);
+    public ResponseEntity<Anime> save(@RequestBody AnimePostRequestBody animePostRequestBody){
+        return new ResponseEntity<>(animeService.save(animePostRequestBody), HttpStatus.CREATED);
         /*
            @RequestBody Anime anime -> Aqui o Jackson entra em cena realizando o mapeamento
            do objeto recebido no corpo(body) para um "Anime", para isso o nome dos atributos/propriedades
@@ -65,8 +67,8 @@ public class AnimeController {
     }
 
     @PutMapping
-    public ResponseEntity<Void> replace(@RequestBody Anime anime){
-        animeService.replace(anime);
+    public ResponseEntity<Void> replace(@RequestBody AnimePutRequestBody animePutRequestBody){
+        animeService.replace(animePutRequestBody);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         /*
         Quando realizamos um PUT(update/replace) estamos substituindo o ESTADO

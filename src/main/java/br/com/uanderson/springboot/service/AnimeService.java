@@ -1,46 +1,30 @@
 package br.com.uanderson.springboot.service;
 
 import br.com.uanderson.springboot.domain.Anime;
+import br.com.uanderson.springboot.repository.AnimeRepository;
+import br.com.uanderson.springboot.requests.AnimePostRequestBody;
+import br.com.uanderson.springboot.requests.AnimePutRequestBody;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 @Service
+@RequiredArgsConstructor
 public class AnimeService {
-    //@Service representa uma Class que é reponsável pela implementação
-    // da REGRA DE NEGÓCIO da aplicação.
+    //@Service representa uma Class que é reponsável pela implementação da REGRA DE NEGÓCIO da aplicação.
 
-    //private final AnimeRepository animeRepository;
-    private static List<Anime> animes;
-    //Lista imutável, onde todas as instâncias da classe terão acesso
-    // à mesma lista, independentemente de quantos objetos sejam criados
-
-    static {
-        //Bloco static é iniciado primeiro, por isso se cria um intância de arrayList e atribui a animes
-        animes = new ArrayList<>(
-                //Criar uma instância de arrayList para que seja possível
-                // manipular a lista 'animes' que é imutável, senão gera um
-                // 'UnsupportedOperationException', pois não aceita modificações
-                List.of(
-                        new Anime(1L, "Naruto"),
-                        new Anime(2L, "Boruto"),
-                        new Anime(3L, "Boku no Hero Academy")
-                )
-        );
-    }
+    private final AnimeRepository animeRepository;
 
     public List<Anime> listAll() {
-        return animes;
+        return animeRepository.findAll();
     }
 
-    public Anime findById(Long id) {
-        return animes.stream()
-                .filter(anime -> anime.getId().equals(id))
-                .findFirst()
+    public Anime findByIdOrThrowBadRequestException(Long id) {
+        return animeRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Anime not found with id " + id));
         /*
             Quando fazemos um request para endpoint passando um ID é não encontramos:
@@ -54,14 +38,16 @@ public class AnimeService {
          */
     }
 
-    public Anime save(Anime anime) {
-        anime.setId(ThreadLocalRandom.current().nextLong(animes.size(), 1_000_000));
-        animes.add(anime);
-        return anime;
+    public Anime save(AnimePostRequestBody animePostRequestBody) {
+        Anime anime = Anime.builder()
+                .name(animePostRequestBody.getName())
+                .build();
+
+        return animeRepository.save(anime);
     }
 
     public void delete(Long id) {
-        animes.remove(findById(id));
+        animeRepository.delete(findByIdOrThrowBadRequestException(id));
         /*
             Irá buscar o anime pelo id e caso não encontrar irá lançar a bad request
             definida no findById.
@@ -69,14 +55,28 @@ public class AnimeService {
          */
     }
 
-    public void replace(Anime anime) {
-        delete(anime.getId());
-        animes.add(anime);
+    public void replace(AnimePutRequestBody animePutRequestBody) {
+        Anime savedAnime = findByIdOrThrowBadRequestException(animePutRequestBody.getId());
+        Anime anime = Anime.builder()
+                .id(savedAnime.getId())
+                .name(animePutRequestBody.getName())
+                .build();
+        animeRepository.save(anime);
+
         /*
         lembrar-do encadeamento das chamadas dos method.
-            1° - Pesquisar o anime pelo id, se não existir lança bad request
-            2° - Deletar caso exista
-            3° - Adicionar o novo anime
+            1° - Pesquisar o anime pelo id, se não existir lança bad request.
+            2° - Para ter certeza que estamos atualziado um anime existente informamos o
+                id do anime ecnontrado na base de dados.
+            3° - Agora a gente passa os dados do anime dto para o anime que será atualziado
+                na base de dados.
+            4° - chama o method save, que irá atualizar o objeto já existente, ou seja seu id não é
+                mais null. save-assume duas funções em razão de ID's null (salva) ou não (atualiza).
+
+        EXTRA: Existe outras forma de passar os dados do DTO para o objeto que irá ser salvo/atualziado
+            - recurso:  BeanUtils.copyProperties("Obj-que-irá-receber", "obj-que irá-passar")
+            - https://www.baeldung.com/apache-commons-beanutils
+            - BeanUtils.copyProperties(anime, animePutRequestBody); - Cópia somente as variaveis com o mesmo nome!!
 
         OBSERVATION:
         Quando realizamos um PUT(update/replace) estamos substituindo o ESTADO
