@@ -1,6 +1,7 @@
 package br.com.uanderson.springboot.service;
 
 import br.com.uanderson.springboot.domain.Anime;
+import br.com.uanderson.springboot.exception.BadRequestException;
 import br.com.uanderson.springboot.mapper.AnimeMapper;
 import br.com.uanderson.springboot.repository.AnimeRepository;
 import br.com.uanderson.springboot.requests.AnimePostRequestBody;
@@ -28,7 +29,7 @@ public class AnimeService {
 
     public Anime findByIdOrThrowBadRequestException(Long id) {
         return animeRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Anime not found with id " + id));
+                .orElseThrow(() -> new BadRequestException("Anime not found with id " + id));
         /*
             Quando fazemos um request para endpoint passando um ID é não encontramos:
              - Muitos retornam 404 - Not Found, mas não se sabe se foi o id que não existe ou
