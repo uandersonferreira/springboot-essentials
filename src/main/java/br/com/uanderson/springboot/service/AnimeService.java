@@ -1,11 +1,11 @@
 package br.com.uanderson.springboot.service;
 
 import br.com.uanderson.springboot.domain.Anime;
+import br.com.uanderson.springboot.mapper.AnimeMapper;
 import br.com.uanderson.springboot.repository.AnimeRepository;
 import br.com.uanderson.springboot.requests.AnimePostRequestBody;
 import br.com.uanderson.springboot.requests.AnimePutRequestBody;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -39,10 +39,7 @@ public class AnimeService {
     }
 
     public Anime save(AnimePostRequestBody animePostRequestBody) {
-        Anime anime = Anime.builder()
-                .name(animePostRequestBody.getName())
-                .build();
-
+        Anime anime = AnimeMapper.INSTANCE.toAnime(animePostRequestBody);
         return animeRepository.save(anime);
     }
 
@@ -57,10 +54,8 @@ public class AnimeService {
 
     public void replace(AnimePutRequestBody animePutRequestBody) {
         Anime savedAnime = findByIdOrThrowBadRequestException(animePutRequestBody.getId());
-        Anime anime = Anime.builder()
-                .id(savedAnime.getId())
-                .name(animePutRequestBody.getName())
-                .build();
+        Anime anime = AnimeMapper.INSTANCE.toAnime(animePutRequestBody);
+        anime.setId(savedAnime.getId());
         animeRepository.save(anime);
 
         /*
