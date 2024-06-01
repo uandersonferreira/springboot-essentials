@@ -38,8 +38,8 @@ public class AnimeController {
         ao invés de somente o conteúdo solicitado, na resquet.
 
         O spring traduz as @RequestParam: size=5 & page2 para object Pageable.
-        - http://localhost:8080/animes?size=5&page2
-        - Dica validar as RequestParam caso optar por receber-las como parametro:
+        - http://localhost:8080/animes?size=5&page=0
+        - Dica validar as RequestParam (controllers e services )caso optar por receber-las como parametro:
              - @Positive @Max(30) int size, @PositiveOrZero int page
              - Aceitar somente números positivos ou positivo + zero
              - O valor máximo permitido é 30
