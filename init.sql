@@ -1,0 +1,11 @@
+INSERT INTO public.anime (name) VALUES ('Hunter x Hunter');
+INSERT INTO public.anime (name) VALUES ('Naruto');
+INSERT INTO public.anime (name) VALUES ('One Piece');
+INSERT INTO public.anime (name) VALUES ('Attack on Titan');
+INSERT INTO public.anime (name) VALUES ('My Hero Academia');
+INSERT INTO public.anime (name) VALUES ('Demon Slayer');
+INSERT INTO public.anime (name) VALUES ('Death Note');
+INSERT INTO public.anime (name) VALUES ('Fullmetal Alchemist: Brotherhood');
+INSERT INTO public.anime (name) VALUES ('Sword Art Online');
+INSERT INTO public.anime (name) VALUES ('Tokyo Ghoul');
+INSERT INTO public.anime (name) VALUES ('Fairy Tail');

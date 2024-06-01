@@ -6,8 +6,13 @@ import br.com.uanderson.springboot.requests.AnimePutRequestBody;
 import br.com.uanderson.springboot.service.AnimeService;
 import br.com.uanderson.springboot.util.DateUtil;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,11 +30,23 @@ public class AnimeController {
     private final AnimeService animeService;
 
     @GetMapping()
-    public ResponseEntity<List<Anime>> listAll() {
+    public ResponseEntity<Page<Anime>> listAll(Pageable pageable) {
         log.info(dateUtil.formatLocalDateTimeToDatabaseStyle(LocalDateTime.now()));
-        return new ResponseEntity<>(animeService.listAll(), HttpStatus.OK);
-        //Boas práticas: retornar conteúdo extras, tipo status da request,
-        // ao invés de somente o conteúdo solicitado, na resquet.
+        return new ResponseEntity<>(animeService.listAll(pageable), HttpStatus.OK);
+        /*
+        Boas práticas: retornar conteúdo extras, tipo status da request,
+        ao invés de somente o conteúdo solicitado, na resquet.
+
+        O spring traduz as @RequestParam: size=5 & page2 para object Pageable.
+        - http://localhost:8080/animes?size=5&page2
+        - Dica validar as RequestParam caso optar por receber-las como parametro:
+             - @Positive @Max(30) int size, @PositiveOrZero int page
+             - Aceitar somente números positivos ou positivo + zero
+             - O valor máximo permitido é 30
+         - Dica 02: Caso opter pelas @RequestParam: criar um objetoDTO para retornar
+            os objetos paginados.
+
+         */
     }
 
     @GetMapping(path = "/{id}")

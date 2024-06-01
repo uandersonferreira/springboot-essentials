@@ -8,6 +8,8 @@ import br.com.uanderson.springboot.requests.AnimePostRequestBody;
 import br.com.uanderson.springboot.requests.AnimePutRequestBody;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,8 +21,19 @@ public class AnimeService {
 
     private final AnimeRepository animeRepository;
 
-    public List<Anime> listAll() {
-        return animeRepository.findAll();
+    public Page<Anime> listAll(Pageable pageable) {
+        return animeRepository.findAll(pageable);
+        /*
+        Retornar os objetos contidos em Page<Anime>, com opçoes de paginação habilitadas
+        ex:
+            http://localhost:8080/animes?size=5&page=1
+        - size -> quantidade de elementos por página
+        - page -> página em si acessada, lembrando que começa em 0 pois é uma lista no fim das contas
+        Dica validar as RequestParam caso optar por receber-las como parametro:
+             - @Positive @Max(30) int size, @PositiveOrZero int page
+             - Aceitar somente números positivos ou positivo + zero
+             - O valor máximo permitido é 30
+         */
     }
 
     public List<Anime> findByName(String name) {
