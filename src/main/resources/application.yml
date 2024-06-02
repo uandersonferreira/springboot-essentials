@@ -18,6 +18,8 @@ spring:
 
 logging:
   level:
+    root: info
     org:
       hibernate:
-        SQL: DEBUG
+        SQL: debug   # Define o nível de log para consultas SQL como DEBUG
+        type: trace  # Define o nível de log para mensagens de tipo como TRACE

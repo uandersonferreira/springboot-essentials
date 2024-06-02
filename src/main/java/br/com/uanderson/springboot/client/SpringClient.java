@@ -82,6 +82,35 @@ public class SpringClient {
                 Anime.class
         );//Também podemos pegar o objeto em si(Anime) se utilizamos '.getBody()'
         log.info("exchange-POST() -> {}",samuraiChamplooSaved);
+
+        // ======================= PUT AND DELETE - exchange ==================
+        /*
+            Por retornarem void não temos o status da request, então não iremos utilizar,
+            justamente, porque queremos ter algumas informações
+            extras (status) quando fazemos uma request. iremos usar o exchange().
+             new RestTemplate().delete("url");//retorna void
+             new RestTemplate().put("",null);//retorna void
+         */
+        Anime animeToBeUpdated = samuraiChamplooSaved.getBody();
+        animeToBeUpdated.setName("Samurai Champloo 2");
+
+        ResponseEntity<Void> samuraiChamplooUpdated = new RestTemplate().exchange(
+                "http://localhost:8080/animes",
+                HttpMethod.PUT,
+                new HttpEntity<>(animeToBeUpdated, createJsonHeader()),
+                Void.class
+        );//Também podemos pegar o objeto em si(Anime) se utilizamos '.getBody()'
+        log.info("exchange-PUT -> {}",samuraiChamplooUpdated);
+
+        // ======================= PUT AND DELETE - exchange ==================
+        ResponseEntity<Void> samuraiChamplooDeleted = new RestTemplate().exchange(
+                "http://localhost:8080/animes/{id}",
+                HttpMethod.DELETE,
+                null,
+                Void.class,
+                animeToBeUpdated.getId()
+        );//Também podemos pegar o objeto em si(Anime) se utilizamos '.getBody()'
+        log.info("exchange-DELETE -> {}",samuraiChamplooDeleted);
     }//main
 
     // Método auxiliar para criar headers da requisição com informações adicionais
