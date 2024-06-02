@@ -29,7 +29,7 @@ public class AnimeService {
             http://localhost:8080/animes?size=5&page=1
         - size -> quantidade de elementos por página
         - page -> página em si acessada, lembrando que começa em 0 pois é uma lista no fim das contas
-        Dica validar as RequestParam caso optar por receber-las como parametro:
+        Dica validar as RequestParam  (controllers e services ) caso optar por receber-las como parametro:
              - @Positive @Max(30) int size, @PositiveOrZero int page
              - Aceitar somente números positivos ou positivo + zero
              - O valor máximo permitido é 30
