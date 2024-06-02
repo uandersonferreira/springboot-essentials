@@ -3,12 +3,12 @@ package br.com.uanderson.springboot.client;
 import br.com.uanderson.springboot.domain.Anime;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 @Log4j2
 public class SpringClient {
@@ -63,11 +63,49 @@ public class SpringClient {
         responseType: A classe Java/Objeto que você deseja usar para mapear o corpo da resposta.
 
         Super Type Token - new ParameterizedTypeReference<List<Anime>>() {}
-
          */
 
+        // ======================= POST - postForObject | exchange ==================
+        Anime kingdom = Anime.builder().name("Kingdom").build();
+        Anime kingdomSaved = new RestTemplate().postForObject(
+                "http://localhost:8080/animes",
+                kingdom,
+                Anime.class
+        );
+        log.info("postForObject() -> {}",kingdomSaved);
 
+        Anime samuraiChamploo = Anime.builder().name("Samurai Champloo").build();
+        ResponseEntity<Anime> samuraiChamplooSaved = new RestTemplate().exchange(
+                "http://localhost:8080/animes",
+                HttpMethod.POST,
+                new HttpEntity<>(samuraiChamploo, createJsonHeader()),
+                Anime.class
+        );//Também podemos pegar o objeto em si(Anime) se utilizamos '.getBody()'
+        log.info("exchange-POST() -> {}",samuraiChamplooSaved);
     }//main
+
+    // Método auxiliar para criar headers da requisição com informações adicionais
+    private static HttpHeaders createJsonHeader(){
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        return httpHeaders;
+        /*
+         Podemos setar mais coisas ao header caso queiramos, como:
+            - token, cookies, lastModified...
+            - as credenciais, username, password
+            - elementos permitidos num Header em geral
+            - só pesquisar como declarar cada um, que é sucesso.
+            ex:
+            Content-Type: Indica o tipo de mídia do corpo da requisição.
+            Accept: Especifica os tipos de mídia aceitos na resposta.
+            Authorization: Utilizado para autenticação.
+            Custom Headers: Qualquer cabeçalho personalizado necessário.
+            User-Agent: Identifica o cliente que faz a requisição.
+            Cache-Control: Controla o comportamento de cache.
+            Accept-Language: Preferências de idioma.
+            Referer: Indica a origem da requisição.
+         */
+    }
 }//class
 /*
 
