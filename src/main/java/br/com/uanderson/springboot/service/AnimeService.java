@@ -21,6 +21,10 @@ public class AnimeService {
 
     private final AnimeRepository animeRepository;
 
+    public List<Anime> listAllNoPageable() {
+        return animeRepository.findAll();
+    }
+
     public Page<Anime> listAll(Pageable pageable) {
         return animeRepository.findAll(pageable);
         /*
@@ -184,6 +188,8 @@ Outras propriedades importantes de @Transactional:
          */
 
     }
+
+
 }//class
 
 /*
