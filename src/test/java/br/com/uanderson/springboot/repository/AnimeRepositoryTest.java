@@ -53,7 +53,7 @@ class AnimeRepositoryTest {//sem public pois estamos exportando tudo do Junit
 
     @Test
     @DisplayName("Delete update anime when Successful")
-    void delete_RemovesAnime_WhenSuccessful(){
+    void delete_RemovesAnime_WhenSuccessful() {
         Anime animeToBeSaved = createAnime();
         Anime animeSaved = this.animeRepository.save(animeToBeSaved);
         /*
@@ -68,9 +68,10 @@ class AnimeRepositoryTest {//sem public pois estamos exportando tudo do Junit
 
         Assertions.assertThat(animeOptional).isEmpty();//verifica se o anime é realmente vazio
     }
+
     @Test
     @DisplayName("Find by name returns list of anime when Successful")
-    void findByName_ReturnsListOfAnime_WhenSuccessful(){
+    void findByName_ReturnsListOfAnime_WhenSuccessful() {
         Anime animeToBeSaved = createAnime();
         Anime animeSaved = this.animeRepository.save(animeToBeSaved);
 
@@ -89,14 +90,36 @@ class AnimeRepositoryTest {//sem public pois estamos exportando tudo do Junit
      */
     @Test
     @DisplayName("Find by name returns empty list when no anime is found")
-    void findByName_ReturnsEmptyList_WhenAnimeIsNotFound(){
+    void findByName_ReturnsEmptyList_WhenAnimeIsNotFound() {
         //Já inicia o banco vazio, pois é testes unitários
         //OBS: empty/vazio é diferente de null/nulo
         List<Anime> animes = this.animeRepository.findByName("xaxaxa");
         Assertions.assertThat(animes).isEmpty();
     }
 
-    private Anime createAnime(){
+    @Test
+    @DisplayName("Save throw ConstraintViolationException when name is empty")
+    void save_ThrowConstraintViolationException_WhenNameIsEmpty() {
+        Anime anime = new Anime();
+
+    /*
+       1° - Aqui testamos somente se a Exception está sendo gerada, ao chamar o method
+       save passando um anime com 'name' inválido.
+
+       Assertions.assertThatThrownBy(() -> this.animeRepository.save(anime))
+                .isInstanceOf(ConstraintViolationException.class);
+
+        2° - Aqui informamos que estamos esperando uma ConstraintViolationException,
+        que é lançanda quando chamamos o method save passando um anime com 'name' inválido
+        e que esperamos que contenha uma mensagem de erro, definida na nossa validação
+        anteriomente, vale lembrar que a message deve está idêntica a definida nas validações dos atributos.
+    */
+        Assertions.assertThatExceptionOfType(ConstraintViolationException.class)
+                .isThrownBy(() -> this.animeRepository.save(anime))
+                .withMessageContaining("The anime name cannot be empty");
+    }
+
+    private Anime createAnime() {
         return Anime.builder()
                 .name("Hajime no Ippo")
                 .build();
