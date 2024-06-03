@@ -12,9 +12,14 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+
+# CUIDADO AO DEFINIR O DIALEC DO HIBERNATE QUANDO ESTIVER USANDO O H2 COM DATABASE PARA OS TESTE
+# ELE IR´´A ACUSAR ERRO DE SINTAXE, POIS DEFINIMOS A DO POSTGRESQL, MAS ESTAMOS USANDO A DELE NOS TEST.
+# ALTERNATIVA CREIO EU SERIA CRIAR OUTRO application e profile de test.
+#    properties:
+#      hibernate:
+#        dialect: org.hibernate.dialect.PostgreSQLDialect
 
 logging:
   level:
