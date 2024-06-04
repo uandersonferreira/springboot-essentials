@@ -1,6 +1,7 @@
 package br.com.uanderson.springboot.repository;
 
 import br.com.uanderson.springboot.domain.Anime;
+import br.com.uanderson.springboot.util.AnimeCreator;
 import jakarta.validation.ConstraintViolationException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -26,7 +27,7 @@ class AnimeRepositoryTest {//sem public pois estamos exportando tudo do Junit
     @Test
     @DisplayName("Save persists anime when Successful")
     void save_PersistAnime_WhenSuccessful() {
-        Anime animeToBeSaved = createAnime();
+        Anime animeToBeSaved = AnimeCreator.createAnimeToBeSaved();
         Anime animeSaved = this.animeRepository.save(animeToBeSaved);
 
         //está sendo utilizado a importação do pacotes: import org.assertj.core.api.Assertions;| não do Junit5 padrão
@@ -40,7 +41,7 @@ class AnimeRepositoryTest {//sem public pois estamos exportando tudo do Junit
     @Test
     @DisplayName("Save update anime when Successful")
     void save_UpdateAnime_WhenSuccessful() {
-        Anime animeToBeSaved = createAnime();
+        Anime animeToBeSaved = AnimeCreator.createAnimeToBeSaved();
         Anime animeSaved = this.animeRepository.save(animeToBeSaved);
 
         animeSaved.setName("Overlord");
@@ -54,7 +55,7 @@ class AnimeRepositoryTest {//sem public pois estamos exportando tudo do Junit
     @Test
     @DisplayName("Delete update anime when Successful")
     void delete_RemovesAnime_WhenSuccessful() {
-        Anime animeToBeSaved = createAnime();
+        Anime animeToBeSaved = AnimeCreator.createAnimeToBeSaved();
         Anime animeSaved = this.animeRepository.save(animeToBeSaved);
         /*
             Lógica para testar um method sem retorno (delete):
@@ -72,7 +73,7 @@ class AnimeRepositoryTest {//sem public pois estamos exportando tudo do Junit
     @Test
     @DisplayName("Find by name returns list of anime when Successful")
     void findByName_ReturnsListOfAnime_WhenSuccessful() {
-        Anime animeToBeSaved = createAnime();
+        Anime animeToBeSaved = AnimeCreator.createAnimeToBeSaved();
         Anime animeSaved = this.animeRepository.save(animeToBeSaved);
 
         String name = animeSaved.getName();
@@ -119,11 +120,6 @@ class AnimeRepositoryTest {//sem public pois estamos exportando tudo do Junit
                 .withMessageContaining("The anime name cannot be empty");
     }
 
-    private Anime createAnime() {
-        return Anime.builder()
-                .name("Hajime no Ippo")
-                .build();
-    }
 
 }
 /*
