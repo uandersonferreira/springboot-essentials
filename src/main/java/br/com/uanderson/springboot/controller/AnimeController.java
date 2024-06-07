@@ -6,9 +6,6 @@ import br.com.uanderson.springboot.requests.AnimePutRequestBody;
 import br.com.uanderson.springboot.service.AnimeService;
 import br.com.uanderson.springboot.util.DateUtil;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
@@ -36,7 +33,7 @@ public class AnimeController {
     }
 
     @GetMapping()
-    public ResponseEntity<Page<Anime>> listAll(Pageable pageable) {
+    public ResponseEntity<Page<Anime>> listAllPageable(Pageable pageable) {
         log.info(dateUtil.formatLocalDateTimeToDatabaseStyle(LocalDateTime.now()));
         return new ResponseEntity<>(animeService.listAll(pageable), HttpStatus.OK);
         /*
