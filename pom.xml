@@ -50,6 +50,14 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- Dependências de segurança -->
+
+        <!-- Ativa a segurança na aplicação -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
         <!-- Conectores de banco de dados -->
 
         <!-- Conector para o banco de dados PostgreSQL -->

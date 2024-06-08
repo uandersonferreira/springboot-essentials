@@ -84,10 +84,14 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             Exception ex, @Nullable Object body, HttpHeaders headers,
             HttpStatusCode statusCode, WebRequest request) {
 
+        String title = "handleExceptionInternal [ERROR]";
+        if (ex.getCause() != null) {
+            title = ex.getCause().getMessage();
+        }
         ExceptionDetails exceptionDetails = ExceptionDetails.builder()
                 .timestamp(LocalDateTime.now())
                 .status(statusCode.value())
-                .title(ex.getCause().getMessage())
+                .title(title)
                 .details(ex.getMessage())
                 .developerMessage(ex.getClass().getName())
                 .build();
