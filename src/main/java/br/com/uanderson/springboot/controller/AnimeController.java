@@ -35,7 +35,7 @@ public class AnimeController {
     @GetMapping()
     public ResponseEntity<Page<Anime>> listAllPageable(Pageable pageable) {
         log.info(dateUtil.formatLocalDateTimeToDatabaseStyle(LocalDateTime.now()));
-        return new ResponseEntity<>(animeService.listAll(pageable), HttpStatus.OK);
+        return new ResponseEntity<>(animeService.listAllPageable(pageable), HttpStatus.OK);
         /*
         Boas práticas: retornar conteúdo extras, tipo status da request,
         ao invés de somente o conteúdo solicitado, na resquet.
@@ -77,8 +77,8 @@ public class AnimeController {
     }
 
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id){
-        animeService.delete(id);
+    public ResponseEntity<Void> deleteById(@PathVariable Long id){
+        animeService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         /*
            Normalmete, deletamos apenas pelo id passado, assim como o findById

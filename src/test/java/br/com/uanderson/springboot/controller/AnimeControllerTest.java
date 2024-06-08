@@ -52,7 +52,7 @@ class AnimeControllerTest {
 
         // Configura o mock animeServiceMock para retornar animePage quando o método listAll for chamado,
         // independentemente do argumento passado.
-        BDDMockito.when(animeServiceMock.listAll(ArgumentMatchers.any()))
+        BDDMockito.when(animeServiceMock.listAllPageable(ArgumentMatchers.any()))
                 .thenReturn(animePage); // Então, retorna o objeto animePage.
 
         // Configura o mock animeServiceMock para retornar uma lista contendo um anime válido quando o método listAllNoPageable for chamado.
@@ -82,7 +82,7 @@ class AnimeControllerTest {
 
         // Configura o mock animeServiceMock para não fazer nada quando o método delete (void) for chamado
         BDDMockito.doNothing().when(animeServiceMock)//doNothing-não faça nada/Por estar chamando um method sem retorno
-                .delete(ArgumentMatchers.anyLong());
+                .deleteById(ArgumentMatchers.anyLong());
 
     }
 
@@ -202,10 +202,10 @@ class AnimeControllerTest {
         Long animeId = 1L;
 
         // 1ª forma de testar um método sem retorno (void) - verificando se o código não lança exceções.
-        Assertions.assertThatCode(() -> animeController.delete(animeId)).doesNotThrowAnyException(); // Verifica se nenhuma exceção é lançada durante a execução.
+        Assertions.assertThatCode(() -> animeController.deleteById(animeId)).doesNotThrowAnyException(); // Verifica se nenhuma exceção é lançada durante a execução.
 
         // 2ª forma de testar um método sem retorno (void) - verificando o ResponseEntity<?> retornado.
-        ResponseEntity<Void> entity = animeController.delete(animeId);
+        ResponseEntity<Void> entity = animeController.deleteById(animeId);
 
         Assertions.assertThat(entity).isNotNull(); // Verifica se a resposta não é nula.
         Assertions.assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT); // Verifica se o status code é NO_CONTENT, indicando sucesso.

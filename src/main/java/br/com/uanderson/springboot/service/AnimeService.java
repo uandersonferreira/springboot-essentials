@@ -25,7 +25,7 @@ public class AnimeService {
         return animeRepository.findAll();
     }
 
-    public Page<Anime> listAll(Pageable pageable) {
+    public Page<Anime> listAllPageable(Pageable pageable) {
         return animeRepository.findAll(pageable);
         /*
         Retornar os objetos contidos em Page<Anime>, com opçoes de paginação habilitadas
@@ -147,7 +147,7 @@ Outras propriedades importantes de @Transactional:
 
     }
 
-    public void delete(Long id) {
+    public void deleteById(Long id) {
         animeRepository.delete(findByIdOrThrowBadRequestException(id));
         /*
             Irá buscar o anime pelo id e caso não encontrar irá lançar a bad request
