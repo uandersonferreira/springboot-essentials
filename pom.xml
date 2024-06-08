@@ -8,67 +8,95 @@
         <version>3.3.0</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
     <groupId>br.com.uanderson</groupId>
     <artifactId>springboot-essentials</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>springboot-essentials</name>
     <description>Demo project for Spring Boot</description>
-    <properties>
+
+    <properties><!--CTRL + ALT + V PARA FAZER O ENCAPSULAMENTO DAS VERSIONS-->
         <java.version>17</java.version>
         <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
         <lombok.version>1.18.32</lombok.version>
     </properties>
+
     <dependencies>
+        <!-- Dependências principais do Spring Boot -->
+
+        <!-- Inicia um projeto Spring Boot com suporte para desenvolvimento de aplicações web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+
+        <!-- JPA Starter para suporte à persistência de dados com Spring Data JPA -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <!-- Habilita as validações de campos com Bean Validation (JSR-380) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <!-- Biblioteca Lombok para reduzir o uso de código boilerplate (getters, setters, etc.) -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Conectores de banco de dados -->
+
+        <!-- Conector para o banco de dados PostgreSQL -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Conector para banco de dados em memória H2, utilizado para testes -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>2.2.224</version>
+            <scope>test</scope> <!-- Executado apenas em cenários de teste -->
+        </dependency>
+
+        <!-- Outras bibliotecas -->
+
+        <!-- Biblioteca MapStruct para mapeamento de dados (DTOs) -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>${org.mapstruct.version}</version>
+        </dependency>
+
+        <!-- Ferramentas de desenvolvimento -->
+
+        <!-- Habilita a atualização automática de mudanças no código durante o desenvolvimento (hot swap)-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-            <version>${org.mapstruct.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-validation</artifactId>
-        </dependency>
 
-        <!--DATA BASE CONNECTOR IN MEMORY FOR TEST-->
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>2.2.224</version>
-            <scope>test</scope><!--Será executado somente em cenários de test-->
-        </dependency>
+        <!-- Dependências de teste -->
 
+        <!-- Starter para suporte a testes com Spring Boot, incluindo JUnit, Mockito, etc. -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-
     </dependencies>
+
+
 
     <!--[INICIO] Maven profile para testes de Integração-->
     <profiles>
