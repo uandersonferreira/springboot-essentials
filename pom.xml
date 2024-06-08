@@ -70,6 +70,30 @@
 
     </dependencies>
 
+    <!--[INICIO] Maven profile para testes de Integração-->
+    <profiles>
+        <profile>
+            <id>integration-tests</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${maven-surefire-plugin.version}</version><!-- version now (3.2.5) -->
+                        <!--Configurando que queremos incluir os teste de integração e os demais-->
+                        <configuration>
+                            <includes>
+                                <include>**/*Tests.*</include><!--IDEPENDENTE DA PASTA/EXECUTE TUDO QUE CONTÉM "Tests" NO FINAL DO NOME.SEM IMPORTAR A EXTENSÃO(.JAVA,.TXT...)-->
+                                <include>**/*IT.*</include><!--IDEPENDENTE DA PASTA/EXECUTE TUDO QUE CONTÉM "IT" NO FINAL DO NOME.SEM IMPORTAR A EXTENSÃO(.JAVA,.TXT...)-->
+                            </includes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+    <!--[FIM] Maven profile para testes de Integração-->
+
     <build>
         <plugins>
             <!--plugin lombok-->
