@@ -29,6 +29,22 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 @Log4j2
 @EnableMethodSecurity//Configuração que ativa/valida a anotação @PreAuthorize("hasRole('ADMIN')") do controller
 public class SecurityConfig {
+
+    /**
+     * ALGUNS FILTROS EXISTENTES NO SPRING SECURITY, QUE FAZEM
+     * PARTE DO PROCESSO DE:
+     *  Authentication -> Authorization
+     *
+     * BasicAuthenticationFilter
+     * UsernamePasswordAuthenticationFilter
+     * DefaultLoginPageGeneratingFilter
+     * DefaultLogoutPageGeneratingFilter
+     * FilterSecurityInterceptor
+     *
+     * @param http
+     * @return
+     * @throws Exception
+     */
     @Bean//CONTÉM A CONFIGURAÇÃO DO QUÊ ESTAMOS PROTEGENDO COM O PROTOCOLO HTTP
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);//desabilitando o CSRF (cenário de estudo)
@@ -45,6 +61,12 @@ public class SecurityConfig {
             do htpp.
             Significa dizer que deve ser informado:
                 - username  and  - password
+
+            CookieCsrfTokenRepository.withHttpOnlyFalse();
+            O httpOnly é um atributo de cookie que, quando definido como
+            true, impede que o cookie seja acessado por JavaScript no navegador.
+            Ao definir httpOnly como false, você permite que o JavaScript acesse
+            o cookie
          */
     }
 
@@ -53,13 +75,18 @@ public class SecurityConfig {
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         log.info("Password encoder {}", passwordEncoder.encode("test"));
 
-        UserDetails userDetails = User
+        UserDetails admin = User
                 .withUsername("Uanderson")
                 .password(passwordEncoder.encode("academy"))
+                .roles("USER", "ADMIN")
+                .build();
+
+        UserDetails user = User.withUsername("devdojo")
+                .password(passwordEncoder.encode("123"))
                 .roles("USER")
                 .build();
 
-        return new InMemoryUserDetailsManager(userDetails);
+        return new InMemoryUserDetailsManager(admin, user);
     }
 
 }//class
@@ -110,5 +137,46 @@ postman.setEnvironmentVariable('x-xsrf-token', xsrfCookie.value);
 
 spring boot security doc CSRF: https://docs.spring.io/spring-security/reference/servlet/exploits/csrf.html
 
+EXPLICAÇÃO BÁSICA DO QUE CADA FILTRO REALIZA NO SPRING SECURITY:
+
+ BasicAuthenticationFilter:
+ - Este filtro lida com a autenticação HTTP básica, geralmente usando o cabeçalho
+ Authorization com credenciais codificadas em Base64.
+ - É usado principalmente para autenticação em aplicações que utilizam HTTP Basic
+ Authentication, onde o nome de usuário e a senha são enviados diretamente no
+ cabeçalho da solicitação.
+ - Ele é processado em cada solicitação que contém o cabeçalho Authorization apropriado.
+
+UsernamePasswordAuthenticationFilter:
+ Este filtro lida com a autenticação de nome de usuário e senha, sendo mais flexível
+ do que o BasicAuthenticationFilter.
+ Permite que os usuários enviem suas credenciais por meio de um formulário da web
+ (form login).
+ Este filtro é comumente usado em aplicativos da web que fornecem um formulário de login.
+ Normalmente, intercepta solicitações de login POST enviadas para uma URL específica
+ (por exemplo, /login).
+
+ DefaultLoginPageGeneratingFilter:
+ Este filtro é usado para gerar automaticamente uma página de login padrão, caso não
+ seja fornecida uma página personalizada.
+ É útil para desenvolvimento rápido e prototipagem, fornecendo uma página de login
+ simples gerada automaticamente.
+ Pode ser substituído por uma página de login personalizada configurada no Spring Security.
+
+ DefaultLogoutPageGeneratingFilter:
+ Semelhante ao DefaultLoginPageGeneratingFilter, este filtro gera uma página de logout
+ padrão se você não fornecer uma página personalizada.
+ Ajuda a gerenciar o processo de logout do usuário, fornecendo uma interface simples
+ para sair da aplicação.
+ Pode ser substituído por uma página de logout personalizada configurada no Spring Security.
+
+ FilterSecurityInterceptor:
+ Este não é um filtro de autenticação, mas um filtro de autorização.
+ Ele intercepta solicitações após a autenticação e verifica se o usuário tem permissão
+ para acessar um recurso específico com base nas regras de autorização configuradas.
+ Aplica autorizações granulares com base em configurações específicas, como anotações
+ @Secured, @PreAuthorize, ou configurações no arquivo de configuração de segurança.
+ Trabalha em conjunto com AccessDecisionManager e SecurityMetadataSource para fazer
+ decisões de autorização.
 
  */

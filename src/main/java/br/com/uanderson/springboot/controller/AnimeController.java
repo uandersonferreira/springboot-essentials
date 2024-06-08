@@ -13,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -50,6 +52,10 @@ public class AnimeController {
          - Dica 02: Caso opter pelas @RequestParam: criar um objetoDTO para retornar
             os objetos paginados.
 
+        Pageable é uma interface fornecida pelo Spring Framework que permite a paginação
+        de resultados em consultas de banco de dados. Ela encapsula informações sobre a
+        página solicitada, como o número da página, o tamanho da página e as opções de ordenação.
+
          */
     }
 
@@ -64,6 +70,15 @@ public class AnimeController {
 
          */
     }
+
+    @GetMapping(path = "by-id/{id}")
+    public ResponseEntity<Anime> findByIdAuthenticationPrincipal(@PathVariable Long id,
+                                                                 @AuthenticationPrincipal UserDetails userDetails){
+        log.info("Name user logado: {}", userDetails.getUsername());
+        return new ResponseEntity<>(animeService.findByIdOrThrowBadRequestException(id), HttpStatus.OK);
+        //@AuthenticationPrincipal pega o user autenticado
+    }
+
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")//verifica se o usuário atual logado possui a permissão de "ADMIN"
     //(E mais recomendado utilizar um padrão de url's é aplicar a proteção com um antMatcher)
