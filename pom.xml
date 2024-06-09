@@ -102,9 +102,16 @@
             <version>2.5.0</version>
         </dependency>
 
+        <!-- Dependência de Metricas -->
+        <!-- Spring Actuator - Ativa as metricas de monitoramento e gerenciamento da aplicação-->
+        <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+
 
         <!-- Dependências de teste -->
-
         <!-- Starter para suporte a testes com Spring Boot, incluindo JUnit, Mockito, etc. -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

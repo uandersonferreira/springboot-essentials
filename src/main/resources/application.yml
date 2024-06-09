@@ -28,3 +28,27 @@ logging:
       hibernate:
         SQL: debug   # Define o nível de log para consultas SQL como DEBUG
         type: trace  # Define o nível de log para mensagens de tipo como TRACE
+
+
+#HABILITANDO ENDPOINTS DE METRICAS DO SPRING ACTUATOR
+management:
+  info:
+    env:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: info, health, metrics
+      # include: "*" -> Habilitando todos os endpoints disponiveis
+
+# INFORMAÇÕES SOBRE A APLICAÇÃO
+info:
+  app: Spring Boot Essentials [UPDATE] - DevDojo Tutorial
+  creator: William Suane
+  creator-linkedin: https://www.linkedin.com/in/williamsuane/
+  course-channel: https://www.youtube.com/playlist?list=PL62G310vn6nFBIxp6ZwGnm8xMcGE3VA5H
+  source-code: https://github.com/devdojobr/springboot2-essentials
+  version: 1.0.0
+  author: Uanderson Ferreira de Oliveira
+  author-github: https://github.com/uandersonFerreira
+  author-linkedin: https://www.linkedin.com/in/uandersonferreira/

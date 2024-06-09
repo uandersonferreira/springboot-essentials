@@ -59,6 +59,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests((authorize -> authorize
                         .requestMatchers("/animes/admin/**").hasRole("ADMIN")//A Ordem de declaração é importante
                         .requestMatchers("/animes/**").hasRole("USER")
+                        .requestMatchers("/actuator/**").permitAll()
                         .anyRequest().authenticated())
                 )
                 .httpBasic(Customizer.withDefaults())
