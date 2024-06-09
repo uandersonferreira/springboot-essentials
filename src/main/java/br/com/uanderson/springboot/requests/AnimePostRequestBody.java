@@ -1,5 +1,6 @@
 package br.com.uanderson.springboot.requests;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -13,6 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AnimePostRequestBody { //Segue o mesmo padrão/conceito dos DTO's
     @NotEmpty(message = "The anime name cannot be empty") //Pega os null também
+    @Schema(description = "This is the Anime's name", example = "Tensei Shittara Slime Datta Ken")
     private String name;
     /*
     Obs: poderiamos usar o novo recurso do java 'para construir essa class dto

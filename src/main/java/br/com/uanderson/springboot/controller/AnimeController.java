@@ -5,7 +5,10 @@ import br.com.uanderson.springboot.requests.AnimePostRequestBody;
 import br.com.uanderson.springboot.requests.AnimePutRequestBody;
 import br.com.uanderson.springboot.service.AnimeService;
 import br.com.uanderson.springboot.util.DateUtil;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -17,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -32,12 +36,21 @@ public class AnimeController {
     private final AnimeService animeService;
 
     @GetMapping(path = "/all")
+    @Operation(summary = "List all animes without pagination", description = "Returns a list of all animes")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful Operation")
+    })
     public ResponseEntity<List<Anime>> listAllNoPageable() {
         log.info(dateUtil.formatLocalDateTimeToDatabaseStyle(LocalDateTime.now()));
         return ResponseEntity.ok(animeService.listAllNoPageable());
     }
 
     @GetMapping()
+    @Operation(
+            summary = "List all animes paginated",
+            description = "The default size is 5, use the parameter size to change the default value",
+            tags = {"anime"}
+    )
     public ResponseEntity<Page<Anime>> listAllPageable(@ParameterObject Pageable pageable) {
         log.info(dateUtil.formatLocalDateTimeToDatabaseStyle(LocalDateTime.now()));
         return new ResponseEntity<>(animeService.listAllPageable(pageable), HttpStatus.OK);
@@ -62,7 +75,12 @@ public class AnimeController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<Anime> findById(@PathVariable Long id) {
+    @Operation(summary = "Find anime by ID", description = "Returns a single anime by its ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful Operation"),
+            @ApiResponse(responseCode = "400", description = "Anime not found")
+    })
+    public ResponseEntity<Anime> findById(@Parameter(description = "ID of the anime to be searched") @PathVariable Long id) {
         return ResponseEntity.ok(animeService.findByIdOrThrowBadRequestException(id));
         /*
           - @GetMapping(path = "/{id}")
@@ -74,16 +92,27 @@ public class AnimeController {
     }
 
     @GetMapping(path = "by-id/{id}")
+    @Operation(summary = "Find anime by ID with user details", description = "Returns a single anime by its ID, logs user details")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful Operation"),
+            @ApiResponse(responseCode = "400", description = "Anime not found")
+    })
     //@PreAuthorize("hasRole('ADMIN')")//verifica se o usuário atual logado possui a permissão de "ADMIN"
     //(E mais recomendado utilizar um padrão de url's é aplicar a proteção com um antMatcher)
-    public ResponseEntity<Anime> findByIdAuthenticationPrincipal(@PathVariable Long id,
-                                                                 @AuthenticationPrincipal UserDetails userDetails){
+    public ResponseEntity<Anime> findByIdAuthenticationPrincipal(
+            @Parameter(description = "ID of the anime to be searched") @PathVariable Long id,
+            @AuthenticationPrincipal UserDetails userDetails){
         log.info("Name user logado: {}", userDetails.getUsername());
         return new ResponseEntity<>(animeService.findByIdOrThrowBadRequestException(id), HttpStatus.OK);
         //@AuthenticationPrincipal pega o user autenticado
     }
 
     @PostMapping
+    @Operation(summary = "Save new anime", description = "Creates a new anime")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Anime created successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad Request Exception, Invalid fields")
+    })
     //@PreAuthorize("hasRole('ADMIN')")//verifica se o usuário atual logado possui a permissão de "ADMIN"
     //(E mais recomendado utilizar um padrão de url's é aplicar a proteção com um antMatcher)
     //@ResponseStatus(HttpStatus.CREATED) //outra forma de retornar o status
@@ -99,7 +128,12 @@ public class AnimeController {
     }
 
     @DeleteMapping(path = "/admin/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id){
+    @Operation(summary = "Delete anime by ID", description = "Deletes an anime by its ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode =  "204", description = "Succesful Operation"),
+            @ApiResponse(responseCode =  "400", description = "When Anime does not exists in the Database")
+    })
+    public ResponseEntity<Void> deleteById(@Parameter(description = "ID of the anime to be deleted") @PathVariable Long id){
         animeService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         /*
@@ -109,6 +143,11 @@ public class AnimeController {
     }
 
     @PutMapping
+    @Operation(summary = "Replace anime", description = "Replaces an existing anime")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Successful Operation"),
+            @ApiResponse(responseCode = "400", description = "Bad Request Exception, Invalid fields")
+    })
     public ResponseEntity<Void> replace(@RequestBody AnimePutRequestBody animePutRequestBody){
         animeService.replace(animePutRequestBody);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -124,7 +163,12 @@ public class AnimeController {
     }
 
     @GetMapping(path = "/find")
-    public ResponseEntity<List<Anime>> findByName(@RequestParam String name) {
+    @Operation(summary = "Find animes by name", description = "Returns a list of animes by their name")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful Operation"),
+            @ApiResponse(responseCode = "404", description = "Animes not found")
+    })
+    public ResponseEntity<List<Anime>> findByName(@Parameter(description = "Name of the animes to be searched") @RequestParam String name) {
         return ResponseEntity.ok(animeService.findByName(name));
     /*
     Quando temos mais de um método HTTP utilizando/respondendo no mesmo endpoint, como a seguir:
