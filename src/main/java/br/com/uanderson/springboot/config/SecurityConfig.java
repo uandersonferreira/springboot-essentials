@@ -6,6 +6,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -57,6 +58,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);//desabilitando o CSRF (cenário de estudo)
         http.authorizeHttpRequests((authorize -> authorize
+                        .requestMatchers("/animes/admin/**").hasRole("ADMIN")//A Ordem de declaração é importante
+                        .requestMatchers("/animes/**").hasRole("USER")
                         .anyRequest().authenticated())
                 )
                 .httpBasic(Customizer.withDefaults())
@@ -69,6 +72,15 @@ public class SecurityConfig {
             do htpp.
             Significa dizer que deve ser informado:
                 - username  and  - password
+            Agora ao configurar uma requestMatchers(antiga antMatchers) é preciso ter uma atenção:
+            - pois a ORDEM DE DECLARAÇÃO é importante
+                - Comecando da MENOS restritiva para a MAIS restritiva
+            - Também podemos definir uma proteção baseado no tipo do method (http) da requisição em uma
+               determinada URL.
+               ex: .requestMatchers(HttpMethod.POST, "/animes").hasAnyRole("ADMIN", "USER")
+
+            OBS: Útil quando seguimos um padrão de url(endpoints), o @Preauthorize não deixa de
+                ser válido :), basta analisar a necessidade.
 
             CookieCsrfTokenRepository.withHttpOnlyFalse();
             O httpOnly é um atributo de cookie que, quando definido como

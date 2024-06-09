@@ -72,7 +72,8 @@ public class AnimeController {
     }
 
     @GetMapping(path = "by-id/{id}")
-    @PreAuthorize("hasRole('ADMIN')")//verifica se o usuário atual logado possui a permissão de "ADMIN"
+    //@PreAuthorize("hasRole('ADMIN')")//verifica se o usuário atual logado possui a permissão de "ADMIN"
+    //(E mais recomendado utilizar um padrão de url's é aplicar a proteção com um antMatcher)
     public ResponseEntity<Anime> findByIdAuthenticationPrincipal(@PathVariable Long id,
                                                                  @AuthenticationPrincipal UserDetails userDetails){
         log.info("Name user logado: {}", userDetails.getUsername());
@@ -81,7 +82,7 @@ public class AnimeController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")//verifica se o usuário atual logado possui a permissão de "ADMIN"
+    //@PreAuthorize("hasRole('ADMIN')")//verifica se o usuário atual logado possui a permissão de "ADMIN"
     //(E mais recomendado utilizar um padrão de url's é aplicar a proteção com um antMatcher)
     //@ResponseStatus(HttpStatus.CREATED) //outra forma de retornar o status
     public ResponseEntity<Anime> save(@RequestBody @Valid AnimePostRequestBody animePostRequestBody){
@@ -95,7 +96,7 @@ public class AnimeController {
         */
     }
 
-    @DeleteMapping(path = "/{id}")
+    @DeleteMapping(path = "/admin/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id){
         animeService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
