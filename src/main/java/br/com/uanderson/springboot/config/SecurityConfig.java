@@ -31,7 +31,6 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
  */
 @EnableWebSecurity//deixou de ter o @Configuration
 @Configuration//para ser entendido com um bean pelo espring
-@EnableSpringDataWebSupport(pageSerializationMode = EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO)
 @Log4j2
 @EnableMethodSecurity//Configuração que ativa/valida a anotação @PreAuthorize("hasRole('ADMIN')") do controller
 @RequiredArgsConstructor
