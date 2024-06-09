@@ -72,6 +72,7 @@ public class AnimeController {
     }
 
     @GetMapping(path = "by-id/{id}")
+    @PreAuthorize("hasRole('ADMIN')")//verifica se o usuário atual logado possui a permissão de "ADMIN"
     public ResponseEntity<Anime> findByIdAuthenticationPrincipal(@PathVariable Long id,
                                                                  @AuthenticationPrincipal UserDetails userDetails){
         log.info("Name user logado: {}", userDetails.getUsername());

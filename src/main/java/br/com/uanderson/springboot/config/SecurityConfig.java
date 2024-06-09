@@ -1,9 +1,14 @@
 package br.com.uanderson.springboot.config;
 
+import br.com.uanderson.springboot.service.DevDojoUserDetailsService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -28,7 +33,10 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 @EnableSpringDataWebSupport(pageSerializationMode = EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO)
 @Log4j2
 @EnableMethodSecurity//Configuração que ativa/valida a anotação @PreAuthorize("hasRole('ADMIN')") do controller
+@RequiredArgsConstructor
 public class SecurityConfig {
+
+    private final DevDojoUserDetailsService devDojoUserDetailsService;
 
     /**
      * ALGUNS FILTROS EXISTENTES NO SPRING SECURITY, QUE FAZEM
@@ -70,24 +78,100 @@ public class SecurityConfig {
          */
     }
 
+    @Bean // Define um bean Spring
+    public AuthenticationManager authenticationManager(PasswordEncoder passwordEncoder) { // Define um método que retorna um AuthenticationManager
+        DaoAuthenticationProvider inMemoryProvider = new DaoAuthenticationProvider(); // Cria um provedor de autenticação para autenticação em memória
+        inMemoryProvider.setUserDetailsService(inMemoryUserDetailsService()); // Define o serviço de detalhes do usuário para o provedor de autenticação em memória
+        inMemoryProvider.setPasswordEncoder(passwordEncoder); // Define o codificador de senha para o provedor de autenticação em memória
+
+        DaoAuthenticationProvider databaseProvider = new DaoAuthenticationProvider(); // Cria um provedor de autenticação para autenticação no banco de dados
+        databaseProvider.setUserDetailsService(devDojoUserDetailsService); // Define o serviço de detalhes do usuário para o provedor de autenticação no banco de dados
+        databaseProvider.setPasswordEncoder(passwordEncoder); // Define o codificador de senha para o provedor de autenticação no banco de dados
+
+        ProviderManager providerManager = new ProviderManager(inMemoryProvider, databaseProvider); // Cria um ProviderManager com os provedores de autenticação configurados
+        providerManager.setEraseCredentialsAfterAuthentication(false); // Define se as credenciais devem ser apagadas após a autenticação
+
+        return providerManager; // Retorna o ProviderManager configurado como AuthenticationManager
+        /*
+         * Configura um AuthenticationManager que suporta autenticação em memória e no banco de dados.
+         *
+         * Este método cria dois provedores de autenticação:
+         * - Um provedor para autenticação em memória (inMemoryProvider).
+         * - Um provedor para autenticação no banco de dados (databaseProvider).
+         *
+         * Cada provedor é configurado com um UserDetailsService correspondente:
+         * - inMemoryProvider usa o serviço inMemoryUserDetailsService() para buscar
+         *   os detalhes do usuário em memória.
+         * - databaseProvider usa o serviço devDojoUserDetailsService para buscar
+         *   os detalhes do usuário no banco de dados.
+         *
+         * Ambos os provedores são configurados com o mesmo PasswordEncoder para criptografar as senhas.
+         *
+         * Os provedores configurados são então adicionados a um ProviderManager, que é retornado
+         * como o AuthenticationManager configurado.
+         */
+
+    }
+
+
+    @Bean
+    public UserDetailsService inMemoryUserDetailsService() {
+        UserDetails adminInMemory = User
+                .withUsername("admin_memory")
+                .password(passwordEncoder().encode("123"))
+                .roles("USER", "ADMIN")
+                .build();
+
+        UserDetails userInMemory = User
+                .withUsername("user_memory")
+                .password(passwordEncoder().encode("123"))
+                .roles("USER")
+                .build();
+
+        return new InMemoryUserDetailsManager(adminInMemory, userInMemory);
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        // Retorne um PasswordEncoder adequado, como BCryptPasswordEncoder,
+        // para codificar as senhas dos usuários
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
+
+    /*
+    POR CAUSA DO POLIMORFISMO, userDetailsService CONSEGUE LOCALIZAR O MÉTODO
+    loadUserByUsername(), QUE ESTÁ SENDO IMPLEMENTADO EM DevDojoUserDetailsService, ATRAVÉS
+    DA VARIÁVEL DE REFERÊNCIA PASSADA.
+
+    NO MÉTODO loadUserByUsername(), ATRAVÉS DA VARIÁVEL DE REFERÊNCIA DO DevDojoRepository
+    (que ESTABELECE A CONEXÃO COM O BANCO DE DADOS), CHAMA-SE O MÉTODO findByUsername(),
+    QUE REALIZA UMA CONSULTA E RETORNA UM UserDetails OU UM Optional/OU LANÇA UsernameNotFoundException.
+
+    ****************-------------------------------************************
+
+    A PARTE DE CONFIGURAÇÃO DO SPRING SUPORTA MÚLTIPLA AUTENTICAÇÃO, COM DIFERENTES
+    TIPOS DE PROVIDERS. (PENSE EM BANCOS DE DADOS)
+
+    MÚLTIPLA AUTENTICAÇÃO -> MAIS DE UM PONTO DE ENTRADA DE DADOS.
+
+    DICA: NUNCA SALVE SENHAS NO BANCO COMO TEXTO PURO (PLAINTEXT PASSWORD).
+    PORTANTO, DEVEMOS UTILIZAR ALGUM TIPO DE CRIPTOGRAFIA PARA AS SENHAS.
+
+        ------------ AUTENTICAÇÃO SOMENTE EM MEMÓRIA --------------
     @Bean
     public UserDetailsService userDetailsService() {
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        log.info("Password encoder {}", passwordEncoder.encode("test"));
+        log.info("Password encoder {}", passwordEncoder.encode("123"));
+        //{bcrypt}$2a$10$fRvLXfIR9Thb/RCYxJdG4uzPxrqla2H8ZAjy/Oc7xQQzFrZ2w1mRS
 
-        UserDetails admin = User
+        UserDetails adminInMemory = User
                 .withUsername("Uanderson")
                 .password(passwordEncoder.encode("academy"))
                 .roles("USER", "ADMIN")
                 .build();
-
-        UserDetails user = User.withUsername("devdojo")
-                .password(passwordEncoder.encode("123"))
-                .roles("USER")
-                .build();
-
-        return new InMemoryUserDetailsManager(admin, user);
-    }
+        return new InMemoryUserDetailsManager(adminInMemory);
+    }*/
 
 }//class
 /*
