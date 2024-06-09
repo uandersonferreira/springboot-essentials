@@ -47,13 +47,18 @@ public class SecurityConfig {
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         log.info("Password encoder {}", passwordEncoder.encode("test"));
 
-        UserDetails userDetails = User
+        UserDetails admin = User
                 .withUsername("Uanderson")
                 .password(passwordEncoder.encode("academy"))
                 .roles("USER", "ADMIN")
                 .build();
 
-        return new InMemoryUserDetailsManager(userDetails);
+        UserDetails user = User.withUsername("devdojo")
+                .password(passwordEncoder.encode("123"))
+                .roles("USER")
+                .build();
+
+        return new InMemoryUserDetailsManager(admin, user);
     }
 
 }//class
