@@ -94,6 +94,15 @@
             <optional>true</optional>
         </dependency>
 
+        <!-- Dependência de documetação -->
+        <!--  Geração de documentação de API - integração entre spring-boot e swagger-ui-->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.5.0</version>
+        </dependency>
+
+
         <!-- Dependências de teste -->
 
         <!-- Starter para suporte a testes com Spring Boot, incluindo JUnit, Mockito, etc. -->
