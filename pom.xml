@@ -19,7 +19,16 @@
         <java.version>17</java.version>
         <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+
         <lombok.version>1.18.32</lombok.version>
+
+        <jib-maven-plugin.version>3.4.3</jib-maven-plugin.version>
+
+        <docker.distroless.image>gcr.io/distroless/java17</docker.distroless.image>
+        <docker.repo.url>registry.hub.docker.com/uandersonferreira</docker.repo.url>
+        <docker.repo.project>springboot-essentials-update</docker.repo.project>
+        <docker.image.name>${docker.repo.url}/${docker.repo.project}</docker.image.name>
+
     </properties>
 
     <dependencies>
@@ -152,7 +161,29 @@
     <!--[FIM] Maven profile para testes de Integração-->
 
     <build>
+        <!--plugin jib-->
         <plugins>
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>${jib-maven-plugin.version}</version>
+                <configuration>
+                    <from>
+                        <image>${docker.distroless.image}</image>
+                    </from>
+                    <to>
+                        <image>${docker.image.name}</image>
+                        <tags>
+                            <tag>${project.version}</tag>
+                        </tags>
+                    </to>
+                    <container>
+                        <mainClass>br.com.uanderson.springboot.SpringbootEssentialsApplication</mainClass>
+                    </container>
+                </configuration>
+            </plugin>
+            <!--[END] plugin jib -->
+
             <!--plugin lombok-->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
