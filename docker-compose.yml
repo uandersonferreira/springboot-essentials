@@ -13,5 +13,15 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
 
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - "./src/main/resources/prometheus.yml:/etc/prometheus/prometheus.yml"#copia de ./src... para etc/prometheus/com o nome de arquivo prometheus.yml
+    command: "--config.file=/etc/prometheus/prometheus.yml" #localização do arquivo de configuração
+    ports:
+      - "9090:9090" #porta do prometheus conf. em prometheus.yml by default is 9090
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
 volumes:
   db_data:

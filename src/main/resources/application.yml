@@ -38,7 +38,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: info, health, metrics
+        include: info, health, metrics, prometheus
       # include: "*" -> Habilitando todos os endpoints disponiveis
 
 # INFORMAÇÕES SOBRE A APLICAÇÃO
