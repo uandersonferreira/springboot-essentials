@@ -23,5 +23,6 @@ services:
       - "9090:9090" #porta do prometheus conf. em prometheus.yml by default is 9090
     extra_hosts:
       - 'host.docker.internal:host-gateway'
+
 volumes:
   db_data:
