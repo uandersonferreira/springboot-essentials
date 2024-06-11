@@ -47,7 +47,5 @@ services:
       <<: *database-variables
     mem_limit: 512m
 
-
-
 volumes:
   db_data:
