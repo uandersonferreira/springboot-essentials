@@ -60,11 +60,11 @@ public class SecurityConfig {
         http.authorizeHttpRequests((authorize -> authorize
                         .requestMatchers("/animes/admin/**").hasRole("ADMIN")//A Ordem de declaração é importante
                         .requestMatchers("/animes/**").hasRole("USER")
+                        .requestMatchers("**/swagger-ui/**").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
                         .anyRequest().authenticated())
                 )
                 .httpBasic(Customizer.withDefaults())
-                .formLogin(Customizer.withDefaults())
                 .logout(Customizer.withDefaults());
         return http.build();
         /*

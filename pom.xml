@@ -25,7 +25,7 @@
         <jib-maven-plugin.version>3.4.3</jib-maven-plugin.version>
 
         <docker.distroless.image>gcr.io/distroless/java17</docker.distroless.image>
-        <!--<docker.repo.url>registry.hub.docker.com/uandersonferreira</docker.repo.url>-->
+<!--        <docker.repo.url>registry.hub.docker.com/uandersonferreira</docker.repo.url>-->
         <docker.repo.url>uandersonferreira</docker.repo.url><!--após eviar a image pro docker hub pode remover o registry.hub.docker.com -->
         <docker.repo.project>springboot-essentials-update</docker.repo.project>
         <docker.image.name>${docker.repo.url}/${docker.repo.project}</docker.image.name>
