@@ -3,7 +3,7 @@ package br.com.uanderson.springboot.integration;
 import br.com.uanderson.springboot.domain.Anime;
 import br.com.uanderson.springboot.domain.DevDojoUserDetails;
 import br.com.uanderson.springboot.repository.AnimeRepository;
-import br.com.uanderson.springboot.repository.DevDojoUserDetailsRepository;
+import br.com.uanderson.springboot.repository.DevDojoUserRepository;
 import br.com.uanderson.springboot.requests.AnimePostRequestBody;
 import br.com.uanderson.springboot.util.AnimeCreator;
 import br.com.uanderson.springboot.util.AnimePostRequestBodyCreator;
@@ -63,7 +63,7 @@ class AnimeControllerIT {
     private AnimeRepository animeRepository; // Repositório de animes usado para interagir com o banco de dados.
 
     @Autowired
-    private DevDojoUserDetailsRepository devDojoUserDetailsRepository;
+    private DevDojoUserRepository devDojoUserRepository;
 
     /*
         Estamos criando variáveis estáticas e finais para poder
@@ -148,7 +148,7 @@ class AnimeControllerIT {
         // Salva um anime de teste no repositório.
         Anime savedAnime = animeRepository.save(AnimeCreator.createAnimeToBeSaved());
 
-        devDojoUserDetailsRepository.save(USER);
+        devDojoUserRepository.save(USER);
 
         // Obtém o nome esperado do anime salvo.
         String expectedName = savedAnime.getName();
@@ -178,7 +178,7 @@ class AnimeControllerIT {
         // Salva um anime de teste no banco de dados.
         Anime savedAnime = animeRepository.save(AnimeCreator.createAnimeToBeSaved());
 
-        devDojoUserDetailsRepository.save(USER);
+        devDojoUserRepository.save(USER);
 
         // Obtém o nome esperado do anime salvo.
         String expectedName = savedAnime.getName();
@@ -205,7 +205,7 @@ class AnimeControllerIT {
         // Salva um anime de teste no banco de dados.
         Anime savedAnime = animeRepository.save(AnimeCreator.createAnimeToBeSaved());
 
-        devDojoUserDetailsRepository.save(USER);
+        devDojoUserRepository.save(USER);
 
         // Obtém o ID esperado do anime salvo.
         Long expectedId = savedAnime.getId();
@@ -227,7 +227,7 @@ class AnimeControllerIT {
         // Salva um anime de teste no banco de dados.
         Anime savedAnime = animeRepository.save(AnimeCreator.createAnimeToBeSaved());
 
-        devDojoUserDetailsRepository.save(USER);
+        devDojoUserRepository.save(USER);
 
         // Obtém o nome esperado do anime salvo.
         String expectedName = savedAnime.getName();
@@ -252,7 +252,7 @@ class AnimeControllerIT {
     @Test
     @DisplayName("findByName returns an empty list of anime when anime is not found")
     void findByName_ReturnsEmptyListOfAnime_WhenAnimeIsNotFound() {
-        devDojoUserDetailsRepository.save(USER);
+        devDojoUserRepository.save(USER);
 
         // Faz uma requisição GET para "/animes/find?name=dbz" onde "dbz" não existe no banco de dados.
         List<Anime> animes = testRestTemplateRoleUser.exchange(
@@ -273,7 +273,7 @@ class AnimeControllerIT {
         // Cria um objeto AnimePostRequestBody para o teste.
         AnimePostRequestBody animePostRequestBody = AnimePostRequestBodyCreator.createAnimePostRequestBody();
 
-        devDojoUserDetailsRepository.save(USER);
+        devDojoUserRepository.save(USER);
 
         // Faz uma requisição POST para "/animes" para salvar o novo anime.
         ResponseEntity<Anime> animeResponseEntity = testRestTemplateRoleUser.postForEntity(
@@ -304,7 +304,7 @@ class AnimeControllerIT {
         // Salva um anime de teste no banco de dados.
         Anime savedAnime = animeRepository.save(AnimeCreator.createAnimeToBeSaved());
 
-        devDojoUserDetailsRepository.save(USER);
+        devDojoUserRepository.save(USER);
 
         // Altera o nome do anime salvo.
         savedAnime.setName("new name");
@@ -330,7 +330,7 @@ class AnimeControllerIT {
         // Salva um anime de teste no banco de dados.
         Anime savedAnime = animeRepository.save(AnimeCreator.createAnimeToBeSaved());
 
-        devDojoUserDetailsRepository.save(ADMIN);
+        devDojoUserRepository.save(ADMIN);
 
         // Faz uma requisição DELETE para "/animes/{id}" para deletar o anime.
         ResponseEntity<Void> animeResponseEntity = testRestTemplateRoleAdmin.exchange(
@@ -349,7 +349,7 @@ class AnimeControllerIT {
     void deleteById_Returns403_WhenUserIsNotAdmin() {
         // Salva um anime de teste no banco de dados.
         Anime savedAnime = animeRepository.save(AnimeCreator.createAnimeToBeSaved());
-        devDojoUserDetailsRepository.save(USER);
+        devDojoUserRepository.save(USER);
 
         // Faz uma requisição DELETE para "/animes/{id}" para deletar o anime.
         ResponseEntity<Void> animeResponseEntity = testRestTemplateRoleUser.exchange(

@@ -71,26 +71,19 @@ aqui: [LinkedIn - William Suane](https://www.linkedin.com/in/williamsuane/)
 
 ## Tecnologias Utilizadas
 
-- Java 17
-- Spring Boot 3+
-- Spring Boot Web
-- Spring Boot Data JPA
-- Spring Boot Validation
-- Spring Boot Security 6+
-- Spring Boot Devtools
-- Spring Boot Test
-- Spring Boot Maven Plugin
-- PostgreSQL
-- H2
-- SpringDoc OpenAPI
-- MapStruct
-- Micrometer Registry Prometheus
-- Lombok
-- Docker
-- Docker Compose
-- Grafana
-- Prometheus
-- Jib
+|                         |                         |
+|-------------------------|-------------------------|
+| Java 17                 | PostgreSQL              |
+| Spring Boot 3+          | H2                      |
+| Spring Boot Web         | SpringDoc OpenAPI       |
+| Spring Boot Data JPA    | MapStruct               |
+| Spring Boot Validation  | Micrometer Registry Prometheus |
+| Spring Boot Security 6+ | Lombok                  |
+| Spring Boot Devtools    | Docker                  |
+| Spring Boot Test        | Docker Compose          |
+| Spring Boot Maven Plugin| Grafana                 |
+|                         | Prometheus              |
+|                         | Jib                     |
 
 ## Pré-requisitos
 
@@ -149,6 +142,7 @@ docker-compose up
 > Demonstração dos endpoints criados para a realização de um CRUD
 básico na aplicação.
 
+![EndPoints da aplicação AnimeController](readmes/img/user-controller.png)
 ![EndPoints da aplicação AnimeController](readmes/img/swagger-endpoints.png)
 ![Schemas da aplicação AnimeController](readmes/img/swagger-schemas.png)
 
