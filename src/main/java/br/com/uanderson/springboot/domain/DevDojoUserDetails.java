@@ -1,5 +1,6 @@
 package br.com.uanderson.springboot.domain;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -30,10 +31,12 @@ public class DevDojoUserDetails implements UserDetails {
     private Long id;
     @NotEmpty(message = "The user's name cannot be empty") //Pega os null também
     private String name;
+    @NotEmpty(message = "The user's username cannot be empty")
     private String username;
+    @NotEmpty(message = "The user's password cannot be empty")
     private String password;
-    private String authorities;//iremos salvar no banco separadas por virgula:  ROLE_ADMIN, ROLE_USER
-
+    @NotEmpty(message = "The user's authorities cannot be empty")
+    private String authorities;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
