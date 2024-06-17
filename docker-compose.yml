@@ -5,7 +5,7 @@ x-database-variables: &database-variables
   SPRING_DATASOURCE_PASSWORD: postgres
 
 services:
-  db:
+  db-anime:
     image: postgres
     container_name: postgres_anime_container
     environment:
@@ -15,6 +15,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - db_data:/var/lib/postgresql/data
     mem_limit: 512m
 
