@@ -101,7 +101,7 @@ git clone https://github.com/uandersonferreira/springboot-essentials-devdojo-upd
 cd springboot-essentials-devdojo-update
 ```
 
-### 2. Construir a Imagem Docker usando Jib
+### 2. Construir a Imagem Docker usando Jib (O mesmo para Atualizar no docker hub)
 
 Utilize os seguintes comandos para construir e enviar a imagem Docker para o Docker Hub:
 
