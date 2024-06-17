@@ -91,9 +91,17 @@ aqui: [LinkedIn - William Suane](https://www.linkedin.com/in/williamsuane/)
 - Maven instalado
 - Conta no Docker Hub (para enviar imagens)
 
-## Como Executar o Projeto
+## Acessa o projeto em deploy 
+> **Observation:** Caso tente acessar e não consiga, pode ser que essa 
+> aplicação, não esteja mais em produção, portanto faça os teste localmente!
+
+- **Deploy Aplicação Spring Boot**: [https://springboot-essentials-prd.up.railway.app/swagger-ui/index.html](https://springboot-essentials-prd.up.railway.app/swagger-ui/index.html)
+
+> **Dica:** caso deseje configurar o seu projeto na nuvem do railway verifique os readmes do projeto
+
+## Como Executar o Projeto Localmente
 > **verifique os readmes do projeto para te auxiliar caso necessário**
-> 
+
 ### 1. Clonar o Repositório
 
 ```sh
@@ -131,7 +139,7 @@ docker-compose up
 
 ### 5. Acessar os Serviços
 
-- **Aplicação Spring Boot**: [http://localhost:8080/](http://localhost:8080/)
+- **Aplicação Spring Boot**: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
 - **Prometheus**: [http://localhost:9090/](http://localhost:9090/)
 - **Grafana**: [http://localhost:3000/](http://localhost:3000/)
 
@@ -168,6 +176,7 @@ básico na aplicação.
 ### Mandando uma Alteração da Imagem para o Docker Hub
 
 ![Docker Hub New Version](readmes/img/docker-hub-new-version.png)
+
 
 ## Links Úteis
 
